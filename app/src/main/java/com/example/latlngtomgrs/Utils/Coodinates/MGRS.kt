@@ -11,16 +11,15 @@ class MGRS() {
     private lateinit var UTM : UTM
 
     fun ConvertGeodeticToMGRS(location : LatLng) : String{
-        val Model = CoordinatesData()
 
         val latitude = location.latitude * PI / 180
         val longitude = location.longitude * PI / 180
 
         val dataModel = ConvertingDataModel(latitude,longitude,0,'0',0.0,0.0)
 
-        UTM = UTM(dataModel)
+        UTM = UTM(dataModel, CoordinatesData.MGRS_a, CoordinatesData.MGRS_f, 0)
 
-        if ((latitude < Model.PI_OVER_2*-1) || (latitude > Model.PI_OVER_2))
+        if ((latitude < CoordinatesData.PI_OVER_2*-1) || (latitude > CoordinatesData.PI_OVER_2))
         {
             return "";
         }
