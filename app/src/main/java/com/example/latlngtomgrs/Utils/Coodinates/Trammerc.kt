@@ -7,7 +7,7 @@ import kotlin.math.*
 
 class Trammerc(val dataModel : ConvertingDataModel, val TrammercDataModel : ConvertDataModelTrammerc) {
 
-    fun init(){
+    init{
         ConvertGeodeticToTransverseMercator(CoordinatesData.MAX_LAT, CoordinatesData.MAX_DELTA_LONG, 0)
         ConvertGeodeticToTransverseMercator(0.0, CoordinatesData.MAX_DELTA_LONG, 1)
 

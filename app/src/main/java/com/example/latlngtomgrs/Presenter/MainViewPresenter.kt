@@ -4,14 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Looper
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.latlngtomgrs.Contract.MainViewContract
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 
 class MainViewPresenter : MainViewContract.Presenter{
 
@@ -30,7 +28,7 @@ class MainViewPresenter : MainViewContract.Presenter{
         val seoul = LatLng(37.536086, 126.989571)
         map.isMyLocationEnabled = true
 
-        view!!.setLocation(CameraUpdateFactory.newLatLngZoom(seoul, 15f))
+        view?.setLocation(CameraUpdateFactory.newLatLngZoom(seoul, 15f))
     }
 
     override fun checkPermission(activity: Activity, context: Context) {
@@ -61,7 +59,7 @@ class MainViewPresenter : MainViewContract.Presenter{
         fusedLocationProviderClient.lastLocation
             .addOnSuccessListener {
             if(it != null){
-                view!!.setLocation(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15f))
+                view?.setLocation(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15f))
             }
         }
         locationRequest = LocationRequest.create()
@@ -72,9 +70,9 @@ class MainViewPresenter : MainViewContract.Presenter{
         }
 
         locationCallback = object : LocationCallback(){
-            override fun onLocationResult(p0: LocationResult?) {
-                p0?.let{
-                    view!!.myLocation(LatLng(it.locations.last().latitude, it.locations.last().longitude))
+            override fun onLocationResult(locationresult: LocationResult?) {
+                locationresult?.let{
+                    view?.myLocation(LatLng(it.locations.last().latitude, it.locations.last().longitude))
                 }
             }
         }
@@ -82,14 +80,10 @@ class MainViewPresenter : MainViewContract.Presenter{
     }
 
     override fun requestLocation() {
-        if(fusedLocationProviderClient == null)
-            return
-        fusedLocationProviderClient!!.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+        fusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
     }
 
     override fun removeLocationListener() {
-        if(fusedLocationProviderClient == null)
-            return
-        fusedLocationProviderClient!!.removeLocationUpdates(locationCallback)
+        fusedLocationProviderClient?.removeLocationUpdates(locationCallback)
     }
 }

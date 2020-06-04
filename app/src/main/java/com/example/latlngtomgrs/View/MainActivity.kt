@@ -2,7 +2,6 @@ package com.example.latlngtomgrs.View
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import com.example.latlngtomgrs.Contract.MainViewContract
 import com.example.latlngtomgrs.Presenter.MainViewPresenter
 import com.example.latlngtomgrs.R
@@ -23,17 +22,18 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        presenter = MainViewPresenter()
-        presenter!!.setView(this)
-        presenter!!.checkPermission(this, this)
-        presenter!!.initLocation(this)
+        presenter = MainViewPresenter().apply {
+            setView(this@MainActivity)
+            checkPermission(this@MainActivity, this@MainActivity)
+            initLocation(this@MainActivity)
+        }
 
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
     }
 
-    override fun onMapReady(p0: GoogleMap?) {
-        googleMap = p0!!
-        presenter!!.initMap(p0)
+    override fun onMapReady(googleMap: GoogleMap?) {
+        this.googleMap = googleMap!!
+        presenter!!.initMap(googleMap)
 
     }
 
@@ -43,18 +43,16 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
 
     override fun myLocation(location: LatLng) {
         val mgrs = MGRS()
-        val test = mgrs.ConvertGeodeticToMGRS(location)
+        mgrsText.text = mgrs.ConvertGeodeticToMGRS(location)
     }
 
     override fun onResume() {
         super.onResume()
-        if(presenter != null)
-            presenter!!.requestLocation()
+            presenter?.requestLocation()
     }
 
     override fun onPause() {
         super.onPause()
-        if(presenter != null)
-            presenter!!.removeLocationListener()
+            presenter?.removeLocationListener()
     }
 }

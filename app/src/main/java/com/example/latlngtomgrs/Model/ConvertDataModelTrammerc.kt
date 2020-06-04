@@ -4,7 +4,7 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class ConvertDataModelTrammerc ( var TranMerc_a : Double, var TranMerc_f : Double, var OriginLatitude : Double, var CentralMerdian : Double, var FalseEasting : Double, var FalseNorthing : Double, var ScaleFactor : Double ){
+class ConvertDataModelTrammerc ( var TranMerc_a : Double, TranMerc_f : Double, var OriginLatitude : Double, var CentralMerdian : Double, var FalseEasting : Double, var FalseNorthing : Double, var ScaleFactor : Double ){
     var TranMercOriginLat = 0.0
     var TranMercOriginLong = 0.0
     var TranMercFalseNorthing = 0.0
@@ -39,7 +39,4 @@ class ConvertDataModelTrammerc ( var TranMerc_a : Double, var TranMerc_f : Doubl
 
     fun SPHSM(Latitude: Double) : Double
             = TranMerc_a / sqrt(1 - TranMercEs * sin(Latitude).pow(2))
-
-    fun SPHSR(Latitude: Double) : Double
-            = TranMerc_a * (1 - TranMercEs) / (sqrt(1 - TranMercEs * sin(Latitude).pow(2))).pow(3)
 }

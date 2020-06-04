@@ -14,15 +14,17 @@ class UTM (val dataModel : ConvertingDataModel, var UTM_a : Double, var UTM_f : 
         val CentralMerdian : Double
         var FalseNorthing = 0.0
 
-        if(dataModel.Longitude < 0)
-            dataModel.Longitude += (2* PI) + 1.0e-10;
+        if(dataModel.Longitude < 0) {
+            dataModel.Longitude += (2 * PI) + 1 - 10
+        }
+
         LatDegrees = (dataModel.Latitude * 180 / PI).toInt()
         LongDegrees = (dataModel.Longitude * 180 / PI).toInt()
 
-        if(dataModel.Longitude < PI)
-            tempZone = (31 + ((dataModel.Longitude * 180 / PI) / 6)).toInt()
+        tempZone = if(dataModel.Longitude < PI)
+            (31 + ((dataModel.Longitude * 180 / PI) / 6)).toInt()
         else
-            tempZone = (((dataModel.Longitude * 180 / PI) / 6) - 29).toInt()
+            (((dataModel.Longitude * 180 / PI) / 6) - 29).toInt()
 
         if(tempZone > 60)
             tempZone = 1
@@ -57,7 +59,6 @@ class UTM (val dataModel : ConvertingDataModel, var UTM_a : Double, var UTM_f : 
             dataModel.Hemisphere = 'N'
         trammerc = Trammerc(dataModel,
             ConvertDataModelTrammerc( UTM_a, UTM_f, 0.0, CentralMerdian, 500000.0, FalseNorthing, 0.9996))
-        trammerc.init()
         trammerc.ConvertGeodeticToTransverseMercator(dataModel.Latitude, dataModel.Longitude, 2)
     }
 

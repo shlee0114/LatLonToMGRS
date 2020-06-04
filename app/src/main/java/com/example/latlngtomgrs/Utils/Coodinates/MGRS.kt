@@ -21,12 +21,10 @@ class MGRS() {
 
         UTM = UTM(dataModel, CoordinatesData.MGRS_a, CoordinatesData.MGRS_f)
 
-        if ((latitude < CoordinatesData.PI_OVER_2*-1) || (latitude > CoordinatesData.PI_OVER_2))
-        {
+        if ((latitude < CoordinatesData.PI_OVER_2*-1) || (latitude > CoordinatesData.PI_OVER_2)){
             return "";
         }
-        if ((longitude < PI*-1) || (longitude > (2 * PI)))
-        {
+        if ((longitude < PI*-1) || (longitude > (2 * PI))){
             return "";
         }
 
@@ -64,7 +62,7 @@ class MGRS() {
         val alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
 
         mgrs = String.format("%2d", dataModel.Zone)
-        mgrs += alphabet[CoordinatesData.LatitudeBandTable[letters[0]!!.toInt()].letter.toInt()]
+        mgrs += alphabet[CoordinatesData.LatitudeBandTable[letters[0]!!.toInt()].toInt()]
         mgrs += alphabet[CoordinatesData.RowBandSTR[letters[1]!!.toInt()].toInt()]
         mgrs += alphabet[CoordinatesData.ColBandSTR[letters[2]!!.toInt()].toInt()]
 
