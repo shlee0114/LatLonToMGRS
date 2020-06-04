@@ -4,28 +4,25 @@ import com.example.latlngtomgrs.Model.ConvertDataModelTrammerc
 import com.example.latlngtomgrs.Model.ConvertingDataModel
 import kotlin.math.PI
 
-class UTM (val dataModel : ConvertingDataModel, var UTM_a : Double, var UTM_f : Double, var UTM_override : Int){
+class UTM (val dataModel : ConvertingDataModel, var UTM_a : Double, var UTM_f : Double){
     lateinit var trammerc : Trammerc
 
     fun ConvertGeodeticToUTM(){
-        var LatDegrees : Int
-        var LongDegrees : Int
+        val LatDegrees : Int
+        val LongDegrees : Int
         var tempZone : Int
-        var OriginLatitude = 0.0
-        var CentralMerdian = 0.0
-        var FalseEasting = 500000.0
+        val CentralMerdian : Double
         var FalseNorthing = 0.0
-        var Scale = 0.9996
 
         if(dataModel.Longitude < 0)
             dataModel.Longitude += (2* PI) + 1.0e-10;
-        LatDegrees = (dataModel.Latitude * 180 / PI) as Int
-        LongDegrees = (dataModel.Longitude * 180 / PI) as Int
+        LatDegrees = (dataModel.Latitude * 180 / PI).toInt()
+        LongDegrees = (dataModel.Longitude * 180 / PI).toInt()
 
         if(dataModel.Longitude < PI)
-            tempZone = (31 + ((dataModel.Longitude * 180 / PI) / 6)) as Int
+            tempZone = (31 + ((dataModel.Longitude * 180 / PI) / 6)).toInt()
         else
-            tempZone = (((dataModel.Longitude * 180 / PI) / 6) - 29) as Int
+            tempZone = (((dataModel.Longitude * 180 / PI) / 6) - 29).toInt()
 
         if(tempZone > 60)
             tempZone = 1
@@ -45,19 +42,10 @@ class UTM (val dataModel : ConvertingDataModel, var UTM_a : Double, var UTM_f : 
                 tempZone = 37
         }
 
-        if(UTM_override != 0){
-            if(tempZone == 1 && UTM_override == 60)
-                tempZone = UTM_override
-            else if(tempZone == 60 && UTM_override == 1)
-                tempZone = UTM_override
-            else if((tempZone -1) <= UTM_override && UTM_override <= (tempZone + 1))
-                tempZone = UTM_override
-        }
-
-        if(tempZone >= 31)
-            CentralMerdian = (6 * tempZone - 183) * PI / 180
+        CentralMerdian = if(tempZone >= 31)
+            (6 * tempZone - 183) * PI / 180
         else
-            CentralMerdian = (6 * tempZone - 177) * PI / 180
+            (6 * tempZone - 177) * PI / 180
 
         dataModel.Zone = tempZone
 
@@ -68,8 +56,9 @@ class UTM (val dataModel : ConvertingDataModel, var UTM_a : Double, var UTM_f : 
         else
             dataModel.Hemisphere = 'N'
         trammerc = Trammerc(dataModel,
-            ConvertDataModelTrammerc( UTM_a, UTM_f, OriginLatitude, CentralMerdian, FalseEasting, FalseNorthing, Scale))
-
+            ConvertDataModelTrammerc( UTM_a, UTM_f, 0.0, CentralMerdian, 500000.0, FalseNorthing, 0.9996))
+        trammerc.init()
+        trammerc.ConvertGeodeticToTransverseMercator(dataModel.Latitude, dataModel.Longitude, 2)
     }
 
 }

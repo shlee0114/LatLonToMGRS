@@ -88,6 +88,8 @@ class MainViewPresenter : MainViewContract.Presenter{
     }
 
     override fun removeLocationListener() {
+        if(fusedLocationProviderClient == null)
+            return
         fusedLocationProviderClient!!.removeLocationUpdates(locationCallback)
     }
 }

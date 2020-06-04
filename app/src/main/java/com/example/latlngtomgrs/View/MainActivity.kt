@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.example.latlngtomgrs.Contract.MainViewContract
 import com.example.latlngtomgrs.Presenter.MainViewPresenter
 import com.example.latlngtomgrs.R
+import com.example.latlngtomgrs.Utils.Coodinates.MGRS
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
     }
 
     override fun myLocation(location: LatLng) {
+        val mgrs = MGRS()
+        val test = mgrs.ConvertGeodeticToMGRS(location)
     }
 
     override fun onResume() {

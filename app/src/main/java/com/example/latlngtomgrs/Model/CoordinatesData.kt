@@ -8,30 +8,30 @@ companion object {
     val DEG_TO_RAD = 0.017453292519943295
     val RAD_TO_DEG = 57.29577951308232087
 
-    val LETTER_A = 0
-    val LETTER_B = 1
-    val LETTER_C = 2
-    val LETTER_D = 3
-    val LETTER_E = 4
-    val LETTER_F = 5
-    val LETTER_G = 6
-    val LETTER_H = 7
-    val LETTER_J = 9
-    val LETTER_K = 10
-    val LETTER_L = 11
-    val LETTER_M = 12
-    val LETTER_N = 13
-    val LETTER_P = 15
-    val LETTER_Q = 16
-    val LETTER_R = 17
-    val LETTER_S = 18
-    val LETTER_T = 19
-    val LETTER_U = 20
-    val LETTER_V = 21
-    val LETTER_W = 22
-    val LETTER_X = 23
-    val LETTER_Y = 24
-    val LETTER_Z = 25
+    val LETTER_A = 0L
+    val LETTER_B = 1L
+    val LETTER_C = 2L
+    val LETTER_D = 3L
+    val LETTER_E = 4L
+    val LETTER_F = 5L
+    val LETTER_G = 6L
+    val LETTER_H = 7L
+    val LETTER_J = 9L
+    val LETTER_K = 10L
+    val LETTER_L = 11L
+    val LETTER_M = 12L
+    val LETTER_N = 13L
+    val LETTER_P = 15L
+    val LETTER_Q = 16L
+    val LETTER_R = 17L
+    val LETTER_S = 18L
+    val LETTER_T = 19L
+    val LETTER_U = 20L
+    val LETTER_V = 21L
+    val LETTER_W = 22L
+    val LETTER_X = 23L
+    val LETTER_Y = 24L
+    val LETTER_Z = 25L
 
     val MGRS_LETTERS = 3
 
@@ -61,7 +61,7 @@ companion object {
     val MAX_LAT = ((PI * 89.99) / 180.0)
     val MAX_DELTA_LONG = ((PI * 90) / 180.0)
 
-    val Latitude_Band_Table = arrayListOf(
+    val LatitudeBandTable = arrayListOf(
         Latitude_Band(LETTER_C, 1100000.0, -72.0, -80.5),
         Latitude_Band(LETTER_D, 2000000.0, -64.0, -72.0),
         Latitude_Band(LETTER_E, 2800000.0, -56.0, -64.0),
@@ -84,14 +84,14 @@ companion object {
         Latitude_Band(LETTER_X, 7900000.0, 84.5, 72.0)
     )
 
-    val UPS_Constant_Table = arrayListOf(
+    val UPSConstantTable = arrayListOf(
         UPS_Constant(LETTER_A, LETTER_J, LETTER_Z, LETTER_Z, 800000.0, 800000.0),
         UPS_Constant(LETTER_B, LETTER_A, LETTER_R, LETTER_Z, 2000000.0, 800000.0),
         UPS_Constant(LETTER_Y, LETTER_J, LETTER_Z, LETTER_P, 800000.0, 1300000.0),
         UPS_Constant(LETTER_Z, LETTER_A, LETTER_J, LETTER_P, 2000000.0, 1300000.0)
     )
 
-    val Row_BandSTR = arrayListOf(
+    val RowBandSTR = arrayListOf(
         LETTER_A, LETTER_B, LETTER_C, LETTER_D, LETTER_E,
         LETTER_F, LETTER_G, LETTER_H, LETTER_J, LETTER_K,
         LETTER_L, LETTER_M, LETTER_N, LETTER_P, LETTER_Q,
@@ -99,7 +99,7 @@ companion object {
         LETTER_W, LETTER_X, LETTER_Y, LETTER_Z
     )
 
-    val Col_BandSTR = arrayListOf(
+    val ColBandSTR = arrayListOf(
         LETTER_A, LETTER_B, LETTER_C, LETTER_D, LETTER_E,
         LETTER_F, LETTER_G, LETTER_H, LETTER_J, LETTER_K,
         LETTER_L, LETTER_M, LETTER_N, LETTER_P, LETTER_Q,
