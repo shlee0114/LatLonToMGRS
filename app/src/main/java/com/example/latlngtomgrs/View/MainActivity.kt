@@ -43,7 +43,8 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
 
     override fun myLocation(location: LatLng) {
         val mgrs = MGRS()
-        mgrsText.text = mgrs.ConvertGeodeticToMGRS(location)
+        nowLocationInfo.text = "Latitude : "+ location.latitude+"  Longitude : " + location.longitude +"\nMGRS : "+mgrs.ConvertGeodeticToMGRS(location)
+        nowLocationInfo_.text =  "Latitude : "+ location.latitude+"  Longitude : " + location.longitude +"\nMGRS : "+mgrs.ConvertGeodeticToMGRS(location)
     }
 
     override fun onResume() {
