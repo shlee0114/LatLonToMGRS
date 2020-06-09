@@ -13,6 +13,7 @@ interface MainViewContract{
     interface View{
         fun setLocation(cameraLocZoom: CameraUpdate)
         fun myLocation(location : LatLng, mrgs : String)
+        fun failedConvertLocation(type : Int)
     }
 
     interface Presenter{
@@ -23,5 +24,6 @@ interface MainViewContract{
         fun requestLocation()
         fun removeLocationListener()
         fun changeVisible(btn : Button, view : ConstraintLayout, textView : TextView, mode : Boolean, context: Context)
+        fun convertLocation(location : Array<String>, type : Boolean, showResult : Array<TextView>)
     }
 }

@@ -17,6 +17,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import java.util.regex.Pattern
 
 class MainViewPresenter : MainViewContract.Presenter{
 
@@ -106,6 +107,20 @@ class MainViewPresenter : MainViewContract.Presenter{
             textView.visibility = View.GONE
             view.visibility = View.VISIBLE
             view.animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+        }
+    }
+
+    override fun convertLocation(location: Array<String>, type: Boolean, showResult: Array<TextView>) {
+        if(type){
+            val m = MGRS()
+            location.indices.forEach {
+                if(!Pattern.matches("^[0-9].,[0-9]", location[it]))
+                    view?.failedConvertLocation(it)
+            }
+
+            showResult[0].text = m.ConvertGeodeticToMGRS(LatLng(location[0].toDouble(), location[1].toDouble()))
+        }else{
+
         }
     }
 }

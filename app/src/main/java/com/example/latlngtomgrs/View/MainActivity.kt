@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
 
         btnUp.setOnClickListener{
-
             presenter.changeVisible(btnUp, inInfoView, nowLocationInfo_, false, this)
         }
         btnDown.setOnClickListener {
@@ -61,5 +60,9 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
     override fun onPause() {
         super.onPause()
             presenter.removeLocationListener()
+    }
+
+    override fun failedConvertLocation(type: Int) {
+
     }
 }
