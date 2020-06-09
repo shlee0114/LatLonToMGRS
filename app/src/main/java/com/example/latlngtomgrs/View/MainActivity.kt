@@ -5,7 +5,6 @@ import android.os.Bundle
 import com.example.latlngtomgrs.Contract.MainViewContract
 import com.example.latlngtomgrs.Presenter.MainViewPresenter
 import com.example.latlngtomgrs.R
-import com.example.latlngtomgrs.Utils.Coodinates.MGRS
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -15,25 +14,33 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallback {
 
-    private var presenter : MainViewContract.Presenter? = null
+    private val presenter : MainViewContract.Presenter by lazy {
+        MainViewPresenter().apply {
+            setView(this@MainActivity)
+            checkPermission(this@MainActivity, this@MainActivity)
+            initLocation(this@MainActivity)
+        }
+    }
     private lateinit var googleMap : GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        presenter = MainViewPresenter().apply {
-            setView(this@MainActivity)
-            checkPermission(this@MainActivity, this@MainActivity)
-            initLocation(this@MainActivity)
-        }
-
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
+
+        btnUp.setOnClickListener{
+
+            presenter.changeVisible(btnUp, inInfoView, nowLocationInfo_, false, this)
+        }
+        btnDown.setOnClickListener {
+            presenter.changeVisible(btnUp, inInfoView, nowLocationInfo_, true, this)
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         this.googleMap = googleMap!!
-        presenter!!.initMap(googleMap)
+        presenter.initMap(googleMap)
 
     }
 
@@ -41,19 +48,18 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
         googleMap.moveCamera(cameraLocZoom)
     }
 
-    override fun myLocation(location: LatLng) {
-        val mgrs = MGRS()
-        nowLocationInfo.text = "Latitude : "+ location.latitude+"  Longitude : " + location.longitude +"\nMGRS : "+mgrs.ConvertGeodeticToMGRS(location)
-        nowLocationInfo_.text =  "Latitude : "+ location.latitude+"  Longitude : " + location.longitude +"\nMGRS : "+mgrs.ConvertGeodeticToMGRS(location)
+    override fun myLocation(location: LatLng, mgrs : String) {
+        nowLocationInfo.text = "Latitude : "+ location.latitude+"  Longitude : " + location.longitude +"\nMGRS : "+mgrs
+        nowLocationInfo_.text =  "Latitude : "+ location.latitude+"  Longitude : " + location.longitude +"\nMGRS : "+mgrs
     }
 
     override fun onResume() {
         super.onResume()
-            presenter?.requestLocation()
+            presenter.requestLocation()
     }
 
     override fun onPause() {
         super.onPause()
-            presenter?.removeLocationListener()
+            presenter.removeLocationListener()
     }
 }

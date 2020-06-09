@@ -3,9 +3,16 @@ package com.example.latlngtomgrs.Presenter
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import com.example.latlngtomgrs.R
 import android.os.Looper
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import com.example.latlngtomgrs.Contract.MainViewContract
+import com.example.latlngtomgrs.Utils.Coodinates.MGRS
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -72,7 +79,8 @@ class MainViewPresenter : MainViewContract.Presenter{
         locationCallback = object : LocationCallback(){
             override fun onLocationResult(locationresult: LocationResult?) {
                 locationresult?.let{
-                    view?.myLocation(LatLng(it.locations.last().latitude, it.locations.last().longitude))
+                    val m = MGRS()
+                    view?.myLocation(LatLng(it.locations.last().latitude, it.locations.last().longitude), m.ConvertGeodeticToMGRS(LatLng(it.lastLocation.latitude, it.lastLocation.longitude)))
                 }
             }
         }
@@ -85,5 +93,19 @@ class MainViewPresenter : MainViewContract.Presenter{
 
     override fun removeLocationListener() {
         fusedLocationProviderClient?.removeLocationUpdates(locationCallback)
+    }
+
+    override fun changeVisible(btn : Button, view : ConstraintLayout, textView : TextView, mode : Boolean, context: Context){
+        if(mode){
+            view.visibility = View.GONE
+            view.animation = AnimationUtils.loadAnimation(context, R.anim.slide_down)
+            textView.visibility = View.VISIBLE
+            btn.visibility = View.VISIBLE
+        }else{
+            btn.visibility = View.GONE
+            textView.visibility = View.GONE
+            view.visibility = View.VISIBLE
+            view.animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+        }
     }
 }
