@@ -15,7 +15,7 @@
        android:id="@+id/map"
        android:name="com.google.android.gms.maps.SupportMapFragment"
        />
-    <LinearLayout0
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <Button
@@ -24,7 +24,7 @@
         android:id="@+id/btnUp"
         android:background="@drawable/up_arrow"
         android:layout_gravity="bottom"/>
-    </LinearLayout0>
+    </LinearLayout>
     <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent"
@@ -81,7 +81,12 @@
              android:layout_marginTop="20dp"
              app:layout_constraintBottom_toBottomOf="@id/setLat"
              app:layout_constraintLeft_toRightOf="@id/setLat"
-             app:layout_constraintTop_toBottomOf="@id/nowLocationInfo" />
+             app:layout_constraintTop_toBottomOf="@id/nowLocationInfo"
+             android:digits="0123456789."
+             android:inputType="number"
+             android:singleLine ="true"
+             android:nextFocusDown="@id/lon"
+             />
 
          <TextView
              android:id="@+id/setLon"
@@ -100,13 +105,16 @@
              android:layout_marginTop="20dp"
              app:layout_constraintBottom_toBottomOf="@id/setLon"
              app:layout_constraintLeft_toRightOf="@id/setLon"
-             app:layout_constraintTop_toBottomOf="@id/lat" />
+             app:layout_constraintTop_toBottomOf="@id/lat"
+             android:digits="0123456789."
+             android:inputType="number"
+             />
 
          <Button
              android:id="@+id/ChLatLon"
              android:layout_width="50dp"
              android:layout_height="40dp"
-             android:layout_marginLeft="17dp"
+             android:layout_marginLeft="5dp"
              android:text=">>"
              app:layout_constraintTop_toTopOf="@id/lat"
              app:layout_constraintBottom_toBottomOf="@+id/lon"
@@ -116,7 +124,7 @@
              android:id="@+id/getMGRS"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_marginLeft="17dp"
+             android:layout_marginLeft="5dp"
              app:layout_constraintBottom_toBottomOf="@id/ChLatLon"
              app:layout_constraintLeft_toRightOf="@id/ChLatLon"
              app:layout_constraintTop_toTopOf="@id/ChLatLon" />
@@ -145,7 +153,7 @@
              android:layout_width="50dp"
              android:layout_height="40dp"
              android:text=">>"
-             android:layout_marginLeft="17dp"
+             android:layout_marginLeft="5dp"
              app:layout_constraintTop_toTopOf="@id/mgrs"
              app:layout_constraintBottom_toBottomOf="@+id/mgrs"
              app:layout_constraintLeft_toRightOf="@+id/mgrs"/>
@@ -154,7 +162,7 @@
              android:id="@+id/getLatitude"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_marginLeft="17dp"
+             android:layout_marginLeft="5dp"
              app:layout_constraintLeft_toRightOf="@id/ChMGRS"
              app:layout_constraintTop_toTopOf="@id/ChMGRS" />
 
@@ -162,7 +170,7 @@
              android:id="@+id/getLongitude"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_marginLeft="17dp"
+             android:layout_marginLeft="5dp"
              app:layout_constraintLeft_toRightOf="@id/ChMGRS"
              app:layout_constraintTop_toBottomOf="@id/getLatitude" />
       </androidx.constraintlayout.widget.ConstraintLayout>

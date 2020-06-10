@@ -1,7 +1,9 @@
 package com.example.latlngtomgrs.View
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
 import com.example.latlngtomgrs.Contract.MainViewContract
 import com.example.latlngtomgrs.Presenter.MainViewPresenter
 import com.example.latlngtomgrs.R
@@ -34,6 +36,19 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
         }
         btnDown.setOnClickListener {
             presenter.changeVisible(btnUp, inInfoView, nowLocationInfo_, true, this)
+        }
+
+        ChLatLon.setOnClickListener {
+            presenter.convertLocation(arrayOf(lat.text.toString(), lon.text.toString()), true, arrayOf(getMGRS))
+        }
+
+        lon.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                presenter.convertLocation(arrayOf(lat.text.toString(), lon.text.toString()), true, arrayOf(getMGRS))
+                true
+            }else{
+                false
+            }
         }
     }
 
