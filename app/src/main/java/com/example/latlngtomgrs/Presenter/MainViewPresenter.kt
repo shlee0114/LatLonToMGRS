@@ -111,8 +111,8 @@ class MainViewPresenter : MainViewContract.Presenter{
     }
 
     override fun convertLocation(location: Array<String>, type: Boolean, showResult: Array<TextView>) {
+        val m = MGRS()
         if(type){
-            val m = MGRS()
             location.indices.forEach {
                 if(!Pattern.matches("^[0-9].,[0-9]", location[it]))
                     view?.failedConvertLocation(it)
