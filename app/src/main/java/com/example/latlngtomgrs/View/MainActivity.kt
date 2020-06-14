@@ -50,6 +50,10 @@ class MainActivity : AppCompatActivity(), MainViewContract.View, OnMapReadyCallb
                 false
             }
         }
+
+        ChMGRS.setOnClickListener {
+            presenter.convertLocation(arrayOf(mgrs.text.toString()), false, arrayOf(getLatitude, getLongitude))
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {

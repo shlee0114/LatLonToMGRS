@@ -3,7 +3,9 @@ package com.example.latlngtomgrs.Utils.Coodinates
 import com.example.latlngtomgrs.Model.ConvertingDataModel
 import com.example.latlngtomgrs.Model.CoordinatesData
 import com.google.android.gms.maps.model.LatLng
+import java.lang.Exception
 import kotlin.math.PI
+import kotlin.math.roundToInt
 import kotlin.math.truncate
 
 class MGRS() {
@@ -33,92 +35,95 @@ class MGRS() {
         return UTMToMGRS()
     }
 
-    fun ConvertMGRSToGeodetic(mgrs : String) : LatLng{
-        dataModel = ConvertingDataModel(0.0,0.0,0,'0',0.0,0.0)
-        return LatLng(dataModel.Latitude, dataModel.Longitude)
-    }
+    fun MGRSToUTM(mgrs : String) : LatLng?{
+        try {
+            dataModel = ConvertingDataModel(0.0, 0.0, 0, '0', 0.0, 0.0)
+            val letters = arrayOfNulls<Long>(3)
+            dataModel.Zone = mgrs.substring(0, 1).toInt()
 
-    private fun MGRSToUTM(mgrs : String){
-        val letters = arrayOfNulls<Long>(3)
-        dataModel.Zone = mgrs.substring(0,1).toInt()
+            letters[0] = (mgrs[3].toLong() - 65).toLong()
+            letters[1] = (mgrs[4].toLong() - 65).toLong()
+            letters[2] = (mgrs[5].toLong() - 65).toLong()
 
-        letters[0] =(mgrs[3].toInt() - 65) as Long
-        letters[1] =(mgrs[4].toInt() - 65) as Long
-        letters[2] =(mgrs[5].toInt() - 65) as Long
+            val strMGRS = mgrs.substring(5, mgrs.lastIndex)
+            val inPrecision = (strMGRS.length / 2.0).roundToInt()
+            dataModel.Easting = strMGRS.substring(0, inPrecision - 1).toDouble()
+            dataModel.Northing = strMGRS.substring(inPrecision).toDouble()
 
-        val strMGRS = mgrs.substring(5, mgrs.lastIndex)
-        val inPrecision = Math.round(strMGRS.length/2.0)
-        dataModel.Easting = strMGRS.substring(0, inPrecision as Int-1).toDouble()
-        dataModel.Northing = strMGRS.substring(inPrecision).toDouble()
+            if (!(letters[0] == CoordinatesData.LETTER_X && (dataModel.Zone == 32 || dataModel.Zone == 34 || dataModel.Zone == 36))) {
+                if (letters[0]!! < CoordinatesData.LETTER_N)
+                    dataModel.Hemisphere = 'S'
+                else
+                    dataModel.Hemisphere = 'N'
+            }
 
-        if(!(letters[0] == CoordinatesData.LETTER_X && (dataModel.Zone == 32 || dataModel.Zone == 34 || dataModel.Zone == 36) )){
-            if(letters[0]!! < CoordinatesData.LETTER_N)
-                dataModel.Hemisphere = 'S'
+            val ltr2LowValue: Long
+            val ltr2HighValue: Long
+            val falseNorthing: Double
+
+            when (dataModel.Zone % 6) {
+                1 or 4 -> {
+                    ltr2LowValue = CoordinatesData.LETTER_A
+                    ltr2HighValue = CoordinatesData.LETTER_B
+                }
+
+                2 or 5 -> {
+                    ltr2LowValue = CoordinatesData.LETTER_J
+                    ltr2HighValue = CoordinatesData.LETTER_R
+                }
+
+                else -> {
+                    ltr2LowValue = CoordinatesData.LETTER_S
+                    ltr2HighValue = CoordinatesData.LETTER_Z
+                }
+            }
+
+            falseNorthing = if (dataModel.Zone % 2 == 0)
+                500000.0
             else
-                dataModel.Hemisphere = 'N'
+                1000000.00
+
+            var gridEasting = 0.0
+            var gridNorthing = 0.0
+
+            if (!(letters[1]!! < ltr2LowValue || letters[2]!! > ltr2HighValue || letters[2]!! > CoordinatesData.LETTER_V)) {
+                gridNorthing = letters[2]!!.toInt() * CoordinatesData.ONEHT + falseNorthing
+                gridEasting = (letters[1]!!.toInt() - ltr2LowValue + 1) * CoordinatesData.ONEHT
+                if (ltr2LowValue == CoordinatesData.LETTER_J && letters[1]!! > CoordinatesData.LETTER_O) {
+                    gridEasting -= CoordinatesData.ONEHT
+                }
+                if (letters[2]!! > CoordinatesData.LETTER_O) {
+                    gridNorthing -= CoordinatesData.ONEHT
+                }
+                if (letters[2]!! > CoordinatesData.LETTER_I) {
+                    gridNorthing -= CoordinatesData.ONEHT
+                }
+                if (gridNorthing >= CoordinatesData.TWOMIL) {
+                    gridNorthing -= CoordinatesData.TWOMIL
+                }
+            }
+            var minNorthing = GetLatitudeBandMinNorthing(letters[0]!!.toInt())
+            val minNorthing2 = minNorthing
+            if (minNorthing != null) {
+                while (minNorthing >= CoordinatesData.TWOMIL)
+                    minNorthing -= CoordinatesData.TWOMIL
+                gridNorthing -= minNorthing
+
+                if (gridNorthing < 0.0)
+                    gridNorthing += CoordinatesData.TWOMIL
+                gridNorthing += minNorthing2!!
+
+                dataModel.Easting += gridEasting
+                dataModel.Northing += gridNorthing
+            }
+
+            UTM = UTM(dataModel, CoordinatesData.MGRS_a, CoordinatesData.MGRS_f)
+            UTM.ConvertUtmToGeodetic()
+            return LatLng(dataModel.Latitude * 180 / PI, dataModel.Longitude * 180 / PI)
         }
-
-        val ltr2LowValue : Long
-        val ltr2HighValue : Long
-        val falseNorthing : Double
-
-        when(dataModel.Zone % 6){
-            1 or 4 -> {
-                ltr2LowValue = CoordinatesData.LETTER_A
-                ltr2HighValue = CoordinatesData.LETTER_B
-            }
-
-            2 or 5 -> {
-                ltr2LowValue = CoordinatesData.LETTER_J
-                ltr2HighValue = CoordinatesData.LETTER_R
-            }
-
-            else -> {
-                ltr2LowValue = CoordinatesData.LETTER_S
-                ltr2HighValue = CoordinatesData.LETTER_Z
-            }
+        catch (e : Exception){
+            return null
         }
-
-        falseNorthing = if(dataModel.Zone % 2 == 0)
-            500000.0
-        else
-            1000000.00
-
-        var gridEasting  = 0.0
-        var gridNorthing = 0.0
-
-        if(!(letters[1]!! < ltr2LowValue || letters[2]!! > ltr2HighValue || letters[2]!! > CoordinatesData.LETTER_V)){
-            gridNorthing = letters[2] as Int * CoordinatesData.ONEHT + falseNorthing
-            gridEasting = (letters[1] as Int - ltr2LowValue + 1) * CoordinatesData.ONEHT
-            if(ltr2LowValue == CoordinatesData.LETTER_J && letters[1]!! > CoordinatesData.LETTER_O){
-                gridEasting -= CoordinatesData.ONEHT
-            }
-            if(letters[2]!! > CoordinatesData.LETTER_O){
-                gridNorthing -= CoordinatesData.ONEHT
-            }
-            if(letters[2]!! > CoordinatesData.LETTER_I){
-                gridNorthing -= CoordinatesData.ONEHT
-            }
-            if(gridNorthing >= CoordinatesData.TWOMIL){
-                gridNorthing -= CoordinatesData.TWOMIL
-            }
-        }
-        var minNorthing = GetLatitudeBandMinNorthing(letters[0] as Int)
-        val minNorthing2 = minNorthing
-        if(minNorthing != null){
-            while (minNorthing >= CoordinatesData.TWOMIL)
-                minNorthing -= CoordinatesData.TWOMIL
-            gridNorthing -= minNorthing
-
-            if(gridNorthing < 0.0)
-                gridNorthing += CoordinatesData.TWOMIL
-            gridNorthing += minNorthing2!!
-
-            dataModel.Easting += gridEasting
-            dataModel.Northing += gridNorthing
-        }
-
-        UTM = UTM(dataModel, CoordinatesData.MGRS_a, CoordinatesData.MGRS_f)
     }
 
     private fun GetLatitudeBandMinNorthing(letter : Int) : Double?{

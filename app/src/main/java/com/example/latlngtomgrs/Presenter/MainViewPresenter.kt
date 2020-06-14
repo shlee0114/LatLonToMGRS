@@ -1,5 +1,6 @@
 package com.example.latlngtomgrs.Presenter
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -64,11 +65,27 @@ class MainViewPresenter : MainViewContract.Presenter{
     override fun initLocation(context : Context) {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
-        fusedLocationProviderClient.lastLocation
-            .addOnSuccessListener {
-            if(it != null){
-                view?.setLocation(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15f))
-            }
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationProviderClient.lastLocation
+                .addOnSuccessListener {
+                    if(it != null){
+                        view?.setLocation(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15f))
+                    }
+                }
+            fusedLocationProviderClient.lastLocation
+                .addOnSuccessListener {
+                    if(it != null){
+                        view?.setLocation(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15f))
+                    }
+                }
+            return
         }
         locationRequest = LocationRequest.create()
 
@@ -114,12 +131,23 @@ class MainViewPresenter : MainViewContract.Presenter{
         val m = MGRS()
         if(type){
             location.indices.forEach {
-                if(!Pattern.matches("^[0-9].,[0-9]", location[it]))
+                if(!Pattern.matches("^[0-9].,[0-9]", location[it])) {
                     view?.failedConvertLocation(it)
+                    return
+                }
             }
 
             showResult[0].text = m.ConvertGeodeticToMGRS(LatLng(location[0].toDouble(), location[1].toDouble()))
         }else{
+            val latLng = m.MGRSToUTM(location[0])
+
+            if(latLng == null){
+                view?.failedConvertLocation(3)
+                return
+            }
+
+            showResult[0].text = latLng?.latitude.toString()
+            showResult[1].text = latLng?.longitude.toString()
 
         }
     }

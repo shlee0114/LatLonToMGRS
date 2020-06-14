@@ -2,6 +2,7 @@ package com.example.latlngtomgrs.Utils.Coodinates
 
 import com.example.latlngtomgrs.Model.ConvertDataModelTrammerc
 import com.example.latlngtomgrs.Model.ConvertingDataModel
+import com.example.latlngtomgrs.Model.CoordinatesData
 import kotlin.math.PI
 
 class UTM (val dataModel : ConvertingDataModel, var UTM_a : Double, var UTM_f : Double){
@@ -60,6 +61,27 @@ class UTM (val dataModel : ConvertingDataModel, var UTM_a : Double, var UTM_f : 
         trammerc = Trammerc(dataModel,
             ConvertDataModelTrammerc( UTM_a, UTM_f, 0.0, CentralMerdian, 500000.0, FalseNorthing, 0.9996))
         trammerc.ConvertGeodeticToTransverseMercator(dataModel.Latitude, dataModel.Longitude, 2)
+    }
+
+    fun ConvertUtmToGeodetic(){
+
+        val CentralMerdian : Double
+        val FalseNorthing : Double
+
+        CentralMerdian = if(dataModel.Zone >= 31){
+            (6 * dataModel.Zone - 183) * PI / 180 + 0.00000005
+        }else{
+            (6 * dataModel.Zone - 177) * PI / 180 + 0.00000005
+        }
+
+        if(dataModel.Hemisphere == 'S')
+            FalseNorthing = 10000000.0
+        else
+            FalseNorthing = 0.0
+        trammerc = Trammerc(dataModel,
+            ConvertDataModelTrammerc( UTM_a, UTM_f, 0.0, CentralMerdian, 500000.0, FalseNorthing, 0.9996))
+
+        trammerc.ConvertTransverseMercatorToGeodetic()
     }
 
 }

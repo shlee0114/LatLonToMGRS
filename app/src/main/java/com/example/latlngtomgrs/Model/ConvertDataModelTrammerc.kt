@@ -37,6 +37,11 @@ class ConvertDataModelTrammerc ( var TranMerc_a : Double, TranMerc_f : Double, v
     fun SPHTMD(Latitude : Double) : Double
             = TranMercAp * Latitude - TranMercBp * sin(2 * Latitude) + TranMercCp * sin(4 * Latitude) + TranMercDp * (6*Latitude) + TranMercEp * (sin(8 * Latitude))
 
-    fun SPHSM(Latitude: Double) : Double
+    fun SPHSN(Latitude: Double) : Double
             = TranMerc_a / sqrt(1 - TranMercEs * sin(Latitude).pow(2))
+
+    fun SPHSR(Latitude: Double) : Double
+            = (TranMerc_a * (1 - TranMercEs)) / (sqrt(1-TranMercEs * sin(Latitude).pow(2))).pow(3)
+
+
 }
