@@ -44,7 +44,7 @@
           android:id="@+id/inInfoView"
           app:layout_constraintEnd_toStartOf="@+id/nowLocationInfo"
           app:layout_constraintStart_toStartOf="@+id/nowLocationInfo"
-          android:visibility="gone"
+          android:visibility=""
           >
          <Button
              android:layout_width="match_parent"
@@ -131,22 +131,22 @@
 
          <TextView
              android:id="@+id/setMGRS"
-             android:layout_width="75dp"
+             android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_marginLeft="10dp"
              android:layout_marginTop="20dp"
-             android:text="MGRS         :"
+             android:text="MGRS   :"
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toBottomOf="@id/lon" />
 
-         <EditText
-             android:id="@+id/mgrs"
-             android:layout_width="130dp"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="20dp"
-             app:layout_constraintLeft_toRightOf="@id/setMGRS"
-             app:layout_constraintTop_toBottomOf="@id/lon"
-             app:layout_constraintBottom_toBottomOf="@id/setMGRS"/>
+            <EditText
+                android:id="@+id/mgrs"
+                android:layout_width="154dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toBottomOf="@id/setMGRS"
+                app:layout_constraintLeft_toRightOf="@id/setMGRS"
+                app:layout_constraintTop_toBottomOf="@id/lon" />
 
          <Button
              android:id="@+id/ChMGRS"
