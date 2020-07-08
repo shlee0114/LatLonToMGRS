@@ -41,14 +41,14 @@ class MGRS() {
             val letters = arrayOfNulls<Long>(3)
             dataModel.Zone = mgrs.substring(0, 1).toInt()
 
-            letters[0] = (mgrs[3].toLong() - 65).toLong()
-            letters[1] = (mgrs[4].toLong() - 65).toLong()
-            letters[2] = (mgrs[5].toLong() - 65).toLong()
+            letters[0] = mgrs[2].toLong() - 65
+            letters[1] = mgrs[3].toLong() - 65
+            letters[2] = mgrs[4].toLong() - 65
 
-            val strMGRS = mgrs.substring(5, mgrs.lastIndex)
+            val strMGRS = mgrs.substring(5, mgrs.lastIndex+1)
             val inPrecision = (strMGRS.length / 2.0).roundToInt()
-            dataModel.Easting = strMGRS.substring(0, inPrecision - 1).toDouble()
-            dataModel.Northing = strMGRS.substring(inPrecision).toDouble()
+            dataModel.Easting = strMGRS.substring(0, inPrecision).toDouble()
+            dataModel.Northing = strMGRS.substring(inPrecision, inPrecision*2).toDouble()
 
             if (!(letters[0] == CoordinatesData.LETTER_X && (dataModel.Zone == 32 || dataModel.Zone == 34 || dataModel.Zone == 36))) {
                 if (letters[0]!! < CoordinatesData.LETTER_N)

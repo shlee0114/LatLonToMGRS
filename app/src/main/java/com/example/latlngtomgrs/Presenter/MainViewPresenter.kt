@@ -18,6 +18,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import java.lang.Exception
 import java.util.regex.Pattern
 
 class MainViewPresenter : MainViewContract.Presenter{
@@ -28,6 +29,8 @@ class MainViewPresenter : MainViewContract.Presenter{
     private var locationCallback : LocationCallback? = null
     private var fusedLocationProviderClient : FusedLocationProviderClient? = null
 
+    var context : Context? = null
+
     override fun setView(view: MainViewContract.View) {
         this.view = view
     }
@@ -35,17 +38,36 @@ class MainViewPresenter : MainViewContract.Presenter{
     override fun initMap(map : GoogleMap) {
         this.map = map
         val seoul = LatLng(37.536086, 126.989571)
-        map.isMyLocationEnabled = true
 
         view?.setLocation(CameraUpdateFactory.newLatLngZoom(seoul, 15f))
+        if(context == null)
+            return
+        if (ActivityCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        map.isMyLocationEnabled = true
     }
 
     override fun checkPermission(activity: Activity, context: Context) {
         val permission =  arrayOf(
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.INTERNET,
-            android.Manifest.permission.ACCESS_NETWORK_STATE,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
         var rejectedPermissionList = ArrayList<String>()
@@ -64,6 +86,8 @@ class MainViewPresenter : MainViewContract.Presenter{
 
     override fun initLocation(context : Context) {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+
+        this.context = context
 
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -106,6 +130,25 @@ class MainViewPresenter : MainViewContract.Presenter{
     }
 
     override fun requestLocation() {
+        if(context == null)
+            return
+        if (ActivityCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
         fusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
     }
 
@@ -131,11 +174,14 @@ class MainViewPresenter : MainViewContract.Presenter{
         val m = MGRS()
         if(type){
             location.indices.forEach {
-                if(!Pattern.matches("^[0-9].,[0-9]", location[it])) {
+                try{
+                    location[it].toDouble()
+                }catch (e : Exception){
                     view?.failedConvertLocation(it)
                     return
                 }
             }
+            view?.setLocation(CameraUpdateFactory.newLatLngZoom(LatLng(location[0].toDouble(), location[1].toDouble()), 15f))
 
             showResult[0].text = m.ConvertGeodeticToMGRS(LatLng(location[0].toDouble(), location[1].toDouble()))
         }else{

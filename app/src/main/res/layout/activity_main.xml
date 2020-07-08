@@ -44,7 +44,7 @@
           android:id="@+id/inInfoView"
           app:layout_constraintEnd_toStartOf="@+id/nowLocationInfo"
           app:layout_constraintStart_toStartOf="@+id/nowLocationInfo"
-          android:visibility=""
+          android:visibility="gone"
           >
          <Button
              android:layout_width="match_parent"
